@@ -1,12 +1,14 @@
+import Intro from './sections/Intro'
+import Projects from './sections/Projects'
+import About from './sections/About'
+
 function App() {
   return (
-    <div>
-      <h1>Georgia's Portfolio</h1>
-
-      <button style={{ cursor: 'pointer' }}>
-        Hover me 👀
-      </button>
-    </div>
+    <main className="h-screen overflow-y-scroll snap-y snap-mandatory">
+      <Intro />
+      <Projects />
+      <About />
+    </main>
   )
 }
 

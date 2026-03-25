@@ -12,8 +12,10 @@
   "dependencies": {
     "@cursorify/cursors": "^0.0.39",
     "@cursorify/react": "^0.0.43",
+    "@tailwindcss/vite": "^4.2.2",
     "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "react-dom": "^19.2.4",
+    "tailwindcss": "^4.2.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
