@@ -39,7 +39,7 @@ const About = () => {
         </div>             
 
         <div className="flex h-full items-center justify-center">
-          <div className="bg-blue-500/20 text-center">
+          <div className="text-center"> {/* bg-blue-500/20 */}
             <h2 className="text-3xl font-bold leading-tight md:text-5xl">
               The more you click around,
               <br />

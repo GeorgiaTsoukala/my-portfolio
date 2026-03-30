@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne+Mono&display=swap');
 @import "tailwindcss";
 
 html,
@@ -5,5 +6,6 @@ body,
 #root {
   background: black;
   color: white;
+  font-family: "Syne Mono", monospace;
 }
 
