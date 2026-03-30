@@ -1,8 +1,20 @@
-import { useState } from 'react'
-import basketballSticker from '../assets/basketballSticker.png'
+import { useRef, useState } from 'react'
+import basketballSticker from '../assets/stickers/basketballSticker.png'
+import bubblePop from '../assets/bubble-pop.mp3'
 
 const About = () => {
   const [isBubbleOpen, setIsBubbleOpen] = useState(false)
+  const bubblePopAudioRef = useRef(new Audio(bubblePop))
+
+  const handleStickerClick = () => {
+    // Play a pop sound effect only when the info bubble is opening
+    if (!isBubbleOpen) {
+      bubblePopAudioRef.current.currentTime = 0
+      void bubblePopAudioRef.current.play()
+    }
+
+    setIsBubbleOpen(!isBubbleOpen)
+  }
 
 
   return (
@@ -26,7 +38,7 @@ const About = () => {
           <button
             type="button"
             style={{ cursor: 'pointer' }}
-            onClick={() => setIsBubbleOpen(!isBubbleOpen)}
+            onClick={handleStickerClick}
             className="block"
           >
             <img
