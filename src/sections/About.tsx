@@ -28,7 +28,7 @@ const About = () => {
         {aboutStickers.map((sticker) => (
           <div
             key={sticker.id}
-            className={`absolute ${sticker.position}`}
+            className={`absolute ${sticker.position} ${openStickerId === sticker.id ? 'z-20' : 'z-10'}`}
           >
             {/* Clickable sticker */}
             <button
@@ -46,12 +46,35 @@ const About = () => {
 
             {/* Show info bubble of the pressed sticker */}
             {openStickerId === sticker.id && (
-              <div className="absolute bottom-full left-1/2 mb-4 -translate-x-1/2">
+              <div
+                className={`absolute left-1/2 z-30 -translate-x-1/2 ${
+                  sticker.bubbleSide === 'top'
+                    ? 'bottom-full mb-4'
+                    : 'top-full mt-4'
+                }`}
+              >
                 <div className="relative inline-block max-w-[clamp(12rem,28vw,22rem)] rounded-[1rem] border-2 border-white bg-black px-4 py-3 text-center">
                   <p className="text-[clamp(0.9rem,1.3vw,1.35rem)] leading-relaxed">
-                    {sticker.text}
+                    {sticker.text}{' '}
+                    {sticker.link ? (
+                      <a
+                        href={sticker.link.href}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="underline"
+                        style={{ cursor: 'pointer' }}
+                      >
+                        {sticker.link.label}
+                      </a>
+                    ) : null}
                   </p>
-                  <div className="absolute left-1/2 bottom-[-0.45rem] h-4 w-4 -translate-x-1/2 rotate-45 border-r-2 border-b-2 border-white bg-black" />
+                  <div
+                    className={`absolute left-1/2 h-4 w-4 -translate-x-1/2 rotate-45 bg-black ${
+                      sticker.bubbleSide === 'top'
+                        ? 'bottom-[-0.45rem] border-r-2 border-b-2 border-white'
+                        : 'top-[-0.45rem] border-l-2 border-t-2 border-white'
+                    }`}
+                  />
                 </div>
               </div>
             )}
