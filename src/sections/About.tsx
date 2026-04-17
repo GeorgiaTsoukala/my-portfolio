@@ -47,14 +47,14 @@ const About = () => {
             {/* Show info bubble of the pressed sticker */}
             {openStickerId === sticker.id && (
               <div
-                className={`absolute left-1/2 z-30 -translate-x-1/2 ${
+                className={`absolute left-1/2 z-30 w-[min(20rem,calc(100vw-3rem))] -translate-x-1/2 text-center ${
                   sticker.bubbleSide === 'top'
                     ? 'bottom-full mb-4'
                     : 'top-full mt-4'
                 }`}
               >
-                <div className="relative inline-block max-w-[clamp(12rem,28vw,22rem)] rounded-[1rem] border-2 border-white bg-black px-4 py-3 text-center">
-                  <p className="text-[clamp(0.9rem,1.3vw,1.35rem)] leading-relaxed">
+                <div className="relative inline-block max-w-full rounded-[1rem] border-2 border-white bg-black px-4 py-3 text-left">
+                  <p className="text-balance whitespace-normal break-words leading-relaxed">
                     {sticker.text}{' '}
                     {sticker.link ? (
                       <a
