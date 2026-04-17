@@ -16,19 +16,22 @@ const About = () => {
     setOpenStickerId(stickerId)
   }
 
-
   return (
     <section
       id="about"
       className="h-screen snap-start p-6 md:p-10"
     >
-      <div className="relative h-full w-full">
+      <div 
+        className="relative h-full w-full"
+        onClick={() => setOpenStickerId(null)} // Preventing sticker/bubble clicks from triggering the close handler
+      >
 
         {/* Create one sticker block per object in aboutStickers array*/}
         {aboutStickers.map((sticker) => (
           <div
             key={sticker.id}
             className={`absolute ${sticker.position} ${openStickerId === sticker.id ? 'z-20' : 'z-10'}`}
+            onClick={(event) => event.stopPropagation()}
           >
             {/* Clickable sticker */}
             <button
@@ -67,6 +70,7 @@ const About = () => {
                         {sticker.link.label}
                       </a>
                     ) : null}
+                    {sticker.textAfterLink}
                   </p>
                   <div
                     className={`absolute left-1/2 h-4 w-4 -translate-x-1/2 rotate-45 bg-black ${
