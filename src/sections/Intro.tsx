@@ -1,8 +1,7 @@
-import { useState } from 'react'
 import { introSkills } from '../content/introSkills'
+import PhysicsSkillBox from '../components/PhysicsSkillBox'
 
 const Intro = () => {
-  const [activeCategory, setActiveCategory] = useState<string | null>(null)
 
   return (
     <section
@@ -37,40 +36,12 @@ const Intro = () => {
         {/* 3-box grid for skill categories on bottom half of the screen */}
         <div className="grid h-1/2 gap-4 pb-6 md:grid-cols-3 md:pb-10">
           {introSkills.map((category) => (
-            <div
+            <PhysicsSkillBox
               key={category.title}
-              className="relative overflow-hidden border"
-            >
-              {/* Category Button */}
-              <button
-                type="button"
-                style={{ cursor: 'pointer' }}
-                className="absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full border-2 px-4 py-2 text-sm md:text-base"
-                onClick={() => setActiveCategory(category.title)}
-              >
-                {category.title}
-              </button>
-
-              {/* Skills that drop in each category */}
-              {activeCategory === category.title && (
-                <div className="absolute inset-0">
-                  {category.skills.map((skill, index) => (
-                    <span
-                      key={skill}
-                      className="absolute rounded-full border-2 px-4 py-2 text-base"
-                      style={{
-                        left: `${20 + index * 18}px`,
-                        top: `${20 + index * 42}px`,
-                      }}
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              )}
-
-            </div>
-          ))}          
+              title={category.title}
+              skills={category.skills}
+            />
+          ))}           
         </div>
       </div>
     </section>
