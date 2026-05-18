@@ -18,43 +18,49 @@ type RenderedSkillPill = {
 
 
 const PhysicsSkillBox = ({ title, skills }: PhysicsSkillBoxProps) => {
+  const buttonRef = useRef<HTMLButtonElement | null>(null)
   const containerRef = useRef<HTMLDivElement | null>(null)
   const engineRef = useRef<Engine | null>(null)
   const runnerRef = useRef<Runner | null>(null)
-  const pillBodiesRef = useRef<
-    Array<{ id: string; text: string; body: Body; width: number; height: number }>
-  >([])
+  const pillBodiesRef = useRef<Array<{ id: string; text: string; body: Body; width: number; height: number }>>([])
 
   const [renderedPills, setRenderedPills] = useState<RenderedSkillPill[]>([])
 
-  const getPillWidth = (text: string) => Math.max(90, text.length * 10 + 32)
+  // Calculate a width based on the text
+  const getPillWidth = (text: string) => Math.max(50, text.length * 10 + 20)
 
   const handleDropSkills = () => {
+    // Check that the physics engine and the box exist
     if (!engineRef.current || !containerRef.current) {
       return
     }
 
+    // Use the current box width to place the pills inside this specific box
     const { width } = containerRef.current.getBoundingClientRect()
-    const pillHeight = 40
-
-    // Remove any older bodies before dropping a fresh set for this category.
+    
+    // Remove any older bodies before dropping a fresh set
     pillBodiesRef.current.forEach(({ body }) => {
       World.remove(engineRef.current!.world, body)
     })
 
-    // Create one Matter body per skill and drop them near the top of the box.
+    // Define a pill height
+    const pillHeight = 40
+
+    // Create one Matter body per skill and drop them near the top of the box
     const newBodies = skills.map((skill, index) => {
       const pillWidth = getPillWidth(skill)
+      const horizontalPadding = pillWidth / 2 + 8
+      const randomX = horizontalPadding + Math.random() * (width - horizontalPadding * 2)
 
       const body = Bodies.rectangle(
-        width / 2 + (Math.random() * 60 - 30),
-        40 + index * 10,
+        randomX,
+        0,
         pillWidth,
         pillHeight,
         {
-          restitution: 0.4,
-          friction: 0.2,
-          frictionAir: 0.02,
+          restitution: 0.95,
+          friction: 0.05,
+          frictionAir: 0.001,
         }
       )
 
@@ -67,17 +73,29 @@ const PhysicsSkillBox = ({ title, skills }: PhysicsSkillBoxProps) => {
       }
     })
 
+    // Save the new pill bodies so the animation loop can read them
     pillBodiesRef.current = newBodies
+
+    // Add the new pill bodies into the physics world
     World.add(engineRef.current.world, newBodies.map((pill) => pill.body))
   }
 
   useEffect(() => {
-    if (!containerRef.current) {
+    if (!containerRef.current || !buttonRef.current) {
       return
     }
 
-    // Get the current rendered size of the box so the physics world matches the real DOM element on screen
-    const { width, height } = containerRef.current.getBoundingClientRect()
+    // Measure the box and button so the physics world lines up with the DOM
+    const containerRect = containerRef.current.getBoundingClientRect()
+    const buttonRect = buttonRef.current.getBoundingClientRect()
+
+    const { width, height } = containerRect
+
+    const buttonX =
+      buttonRect.left - containerRect.left + buttonRect.width / 2
+
+    const buttonY =
+      buttonRect.top - containerRect.top + buttonRect.height / 2
 
     // Create one Matter engine and runner for this specific box
     const engine = Engine.create()
@@ -89,13 +107,16 @@ const PhysicsSkillBox = ({ title, skills }: PhysicsSkillBoxProps) => {
     // Thickness of the invisible boundary bodies that keep pills inside the box
     const wallThickness = 40
 
-    // Create invisible static boundaries so future pills stay inside the box
+    // Create invisible static boundaries so pills stay inside the box
     const floor = Bodies.rectangle(
       width / 2,
       height + wallThickness / 2,
       width,
       wallThickness,
-      { isStatic: true }
+      {
+        isStatic: true,
+        restitution: 1,
+      }
     )
 
     const ceiling = Bodies.rectangle(
@@ -122,15 +143,23 @@ const PhysicsSkillBox = ({ title, skills }: PhysicsSkillBoxProps) => {
       { isStatic: true }
     )
 
+    const buttonBody = Bodies.rectangle(
+      buttonX,
+      buttonY,
+      buttonRect.width,
+      buttonRect.height,
+      { isStatic: true }
+    )
+
     // Add the boundaries to this box's physics world and start the simulation
-    World.add(engine.world, [floor, ceiling, leftWall, rightWall])
+    World.add(engine.world, [floor, ceiling, leftWall, rightWall, buttonBody])
     Runner.run(runner, engine)
 
     let animationFrameId = 0
 
-    // Sync each Matter body's live position back into React state
-    // so we can render the pills as normal DOM elements.
+    // Keep the visible React pills always in sync with the hidden Matter bodies
     const updatePillPosition = () => {
+      // Turn each physics body into renderable pill data
       setRenderedPills(
         pillBodiesRef.current.map(({ id, text, body, width: pillWidth, height: pillHeight }) => ({
           id,
@@ -143,14 +172,16 @@ const PhysicsSkillBox = ({ title, skills }: PhysicsSkillBoxProps) => {
         }))
       )
 
+      // Ask the browser to run this again on the next animation frame
       animationFrameId = window.requestAnimationFrame(updatePillPosition)
     }
 
+    // Start the render-sync loop once after the physics world is set up
     updatePillPosition()
 
 
     // Stop the render loop and clear the Matter world when the box unmounts
-    // so we do not leave animation or physics work running in the background.
+    // so no animation or physics work is running in the background
     return () => {
       window.cancelAnimationFrame(animationFrameId)
 
@@ -163,7 +194,7 @@ const PhysicsSkillBox = ({ title, skills }: PhysicsSkillBoxProps) => {
   return (
     <div 
       ref={containerRef}
-      className="relative overflow-hidden border"
+      className="relative overflow-hidden"
     >
       {/* Visual DOM versions of the Matter pill bodies */}
       {renderedPills.map((pill) => (
@@ -184,6 +215,7 @@ const PhysicsSkillBox = ({ title, skills }: PhysicsSkillBoxProps) => {
       
       {/* Button that spawns the physics pills for this category */}
       <button
+        ref={buttonRef}
         type="button"
         style={{ cursor: 'pointer' }}
         className="absolute bottom-3 left-1/2 z-10 -translate-x-1/2 rounded-full border-2 px-4 py-2 text-sm md:text-base"
