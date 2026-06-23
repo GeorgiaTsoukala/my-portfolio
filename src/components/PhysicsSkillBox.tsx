@@ -1,14 +1,25 @@
 import { useEffect, useRef, useState } from 'react'
 import { Bodies, Engine, Runner, World, type Body } from 'matter-js'
+import type { IntroSkillItem } from '../content/introSkills'
 
 type PhysicsSkillBoxProps = {
   title: string
-  skills: string[]
+  skills: IntroSkillItem[]
 }
 
-type RenderedSkillPill = {
+type PhysicsPill = {
   id: string
-  text: string
+  label: string
+  color: string
+  body: Body
+  width: number
+  height: number
+}
+
+type RenderedPill = {
+  id: string
+  label: string
+  color: string
   x: number
   y: number
   angle: number
@@ -16,15 +27,14 @@ type RenderedSkillPill = {
   height: number
 }
 
-
 const PhysicsSkillBox = ({ title, skills }: PhysicsSkillBoxProps) => {
   const buttonRef = useRef<HTMLButtonElement | null>(null)
   const containerRef = useRef<HTMLDivElement | null>(null)
   const engineRef = useRef<Engine | null>(null)
   const runnerRef = useRef<Runner | null>(null)
-  const pillBodiesRef = useRef<Array<{ id: string; text: string; body: Body; width: number; height: number }>>([])
+  const physicsPillsRef = useRef<PhysicsPill[]>([])
 
-  const [renderedPills, setRenderedPills] = useState<RenderedSkillPill[]>([])
+  const [renderedPills, setRenderedPills] = useState<RenderedPill[]>([])
 
   // Calculate a width based on the text
   const getPillWidth = (text: string) => Math.max(50, text.length * 10 + 20)
@@ -39,7 +49,7 @@ const PhysicsSkillBox = ({ title, skills }: PhysicsSkillBoxProps) => {
     const { width } = containerRef.current.getBoundingClientRect()
     
     // Remove any older bodies before dropping a fresh set
-    pillBodiesRef.current.forEach(({ body }) => {
+    physicsPillsRef.current.forEach(({ body }) => {
       World.remove(engineRef.current!.world, body)
     })
 
@@ -48,7 +58,7 @@ const PhysicsSkillBox = ({ title, skills }: PhysicsSkillBoxProps) => {
 
     // Create one Matter body per skill and drop them near the top of the box
     const newBodies = skills.map((skill, index) => {
-      const pillWidth = getPillWidth(skill)
+      const pillWidth = getPillWidth(skill.label)
       const horizontalPadding = pillWidth / 2 + 8
       const randomX = horizontalPadding + Math.random() * (width - horizontalPadding * 2)
 
@@ -65,8 +75,9 @@ const PhysicsSkillBox = ({ title, skills }: PhysicsSkillBoxProps) => {
       )
 
       return {
-        id: `${title}-${skill}-${index}`,
-        text: skill,
+        id: `${title}-${skill.label}-${index}`,
+        label: skill.label,
+        color: skill.color,
         body,
         width: pillWidth,
         height: pillHeight,
@@ -74,7 +85,7 @@ const PhysicsSkillBox = ({ title, skills }: PhysicsSkillBoxProps) => {
     })
 
     // Save the new pill bodies so the animation loop can read them
-    pillBodiesRef.current = newBodies
+    physicsPillsRef.current = newBodies
 
     // Add the new pill bodies into the physics world
     World.add(engineRef.current.world, newBodies.map((pill) => pill.body))
@@ -161,9 +172,10 @@ const PhysicsSkillBox = ({ title, skills }: PhysicsSkillBoxProps) => {
     const updatePillPosition = () => {
       // Turn each physics body into renderable pill data
       setRenderedPills(
-        pillBodiesRef.current.map(({ id, text, body, width: pillWidth, height: pillHeight }) => ({
+        physicsPillsRef.current.map(({ id, label, color, body, width: pillWidth, height: pillHeight }) => ({
           id,
-          text,
+          label,
+          color,
           x: body.position.x,
           y: body.position.y,
           angle: body.angle,
@@ -178,7 +190,6 @@ const PhysicsSkillBox = ({ title, skills }: PhysicsSkillBoxProps) => {
 
     // Start the render-sync loop once after the physics world is set up
     updatePillPosition()
-
 
     // Stop the render loop and clear the Matter world when the box unmounts
     // so no animation or physics work is running in the background
@@ -207,9 +218,11 @@ const PhysicsSkillBox = ({ title, skills }: PhysicsSkillBoxProps) => {
             left: `${pill.x}px`,
             top: `${pill.y}px`,
             transform: `translate(-50%, -50%) rotate(${pill.angle}rad)`,
+            backgroundColor: pill.color,
+            color: '#000000',
           }}
         >
-          {pill.text}
+          {pill.label}
         </div>
       ))}
       
