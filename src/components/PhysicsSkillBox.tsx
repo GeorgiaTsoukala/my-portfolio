@@ -36,8 +36,9 @@ const PhysicsSkillBox = ({ title, skills }: PhysicsSkillBoxProps) => {
 
   const [renderedPills, setRenderedPills] = useState<RenderedPill[]>([])
 
-  // Measure the label width more accurately for the desktop pill font.
+  // Measure the label width so each pill size matches its text length
   const getPillWidth = (text: string) => {
+    // Create a temporary canvas context so the label text width can be measured
     const canvas = document.createElement('canvas')
     const context = canvas.getContext('2d')
 
@@ -45,12 +46,13 @@ const PhysicsSkillBox = ({ title, skills }: PhysicsSkillBoxProps) => {
       return 120
     }
 
-    // Match the large-screen pill font as closely as possible.
+    // Match the lg font size as closely as possible
     context.font = '18px "Syne Mono", monospace'
 
     const textWidth = context.measureText(text).width
     const horizontalPadding = 32
 
+    // Add some horizontal space around the text and keep a small minimum width
     return Math.max(90, Math.ceil(textWidth + horizontalPadding))
   }
 
