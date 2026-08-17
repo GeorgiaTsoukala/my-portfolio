@@ -36,8 +36,23 @@ const PhysicsSkillBox = ({ title, skills }: PhysicsSkillBoxProps) => {
 
   const [renderedPills, setRenderedPills] = useState<RenderedPill[]>([])
 
-  // Calculate a width based on the text
-  const getPillWidth = (text: string) => Math.max(50, text.length * 10 + 20)
+  // Measure the label width more accurately for the desktop pill font.
+  const getPillWidth = (text: string) => {
+    const canvas = document.createElement('canvas')
+    const context = canvas.getContext('2d')
+
+    if (!context) {
+      return 120
+    }
+
+    // Match the large-screen pill font as closely as possible.
+    context.font = '18px "Syne Mono", monospace'
+
+    const textWidth = context.measureText(text).width
+    const horizontalPadding = 32
+
+    return Math.max(90, Math.ceil(textWidth + horizontalPadding))
+  }
 
   const handleDropSkills = () => {
     // Check that the physics engine and the box exist
@@ -211,7 +226,7 @@ const PhysicsSkillBox = ({ title, skills }: PhysicsSkillBoxProps) => {
       {renderedPills.map((pill) => (
         <div
           key={pill.id}
-          className="absolute rounded-full border-2 px-4 py-2 text-sm"
+          className="absolute flex items-center justify-center whitespace-nowrap rounded-full border-2 text-sm md:text-base lg:text-lg"
           style={{
             width: `${pill.width}px`,
             height: `${pill.height}px`,
@@ -231,7 +246,7 @@ const PhysicsSkillBox = ({ title, skills }: PhysicsSkillBoxProps) => {
         ref={buttonRef}
         type="button"
         style={{ cursor: 'pointer' }}
-        className="absolute bottom-3 left-1/2 z-10 -translate-x-1/2 rounded-full border-2 px-4 py-2 text-sm md:text-base"
+        className="absolute bottom-3 left-1/2 z-10 whitespace-nowrap -translate-x-1/2 rounded-full border-2 px-4 py-2 text-sm md:text-base lg:text-lg"
         onClick={handleDropSkills}
       >
         {title}

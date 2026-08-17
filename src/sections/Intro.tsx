@@ -34,7 +34,7 @@ const Intro = () => {
         </div>
 
         {/* 3-box grid for skill categories on bottom half of the screen */}
-        <div className="grid h-1/2 gap-4 pb-6 md:grid-cols-3 md:pb-10">
+        <div className="grid h-1/2 gap-8 pb-6 md:grid-cols-3 md:pb-10">
           {introSkills.map((category) => (
             <PhysicsSkillBox
               key={category.title}
