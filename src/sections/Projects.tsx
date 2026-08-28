@@ -1,10 +1,12 @@
+import Carousel from '../components/Carousel'
+
 const Projects = () => {
   return (
     <section 
       id="projects"
-      className="min-h-screen snap-start flex items-center justify-center"
+      className="h-screen snap-start px-6 md:px-10"
     >
-      <h1>Projects</h1>
+      <Carousel />
     </section>
   )
 }
