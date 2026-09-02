@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { projectsDetails } from '../content/projectsDetails'
 
 // Layout values for the three visible carousel positions: left and right background cards, centered active card
@@ -57,18 +58,31 @@ const Carousel = () => {
           const layout = cardLayouts[index]
 
           return (
-            <article
+            <motion.article
               key={project.id}
-              className="absolute left-1/2 top-1/2 flex h-80 w-96 flex-col justify-between border-2 border-white p-8 text-white"
-              style={{
-                transform: `translate(-50%, -50%) translateX(${layout.x}) scale(${layout.scale}) rotate(${layout.rotate}deg)`,
+              className="absolute left-1/2 top-1/2 flex h-130 w-140 flex-col justify-between border-2 border-white p-8 text-white"
+              // Framer Motion animates the carousel movement
+              transition={{
+                type: 'spring',
+                stiffness: 250, // Controls how strongly the animation is pulled toward its target, more stiff = faster/snappier
+                damping: 15, // Controls how much the motion is slowed down, less damping = more bounce
+              }}
+              animate={{
+                x: layout.x,
+                scale: layout.scale,
+                rotate: layout.rotate,
                 zIndex: layout.zIndex,
                 backgroundColor: layout.backgroundColor,
+              }}
+              // Keep centering separate from animated x so Framer Motion does not overwrite the -50% offset
+              style={{
+                translateX: '-50%',
+                translateY: '-50%',
               }}
             >
               <h2>{project.title}</h2>
               <p>{project.description}</p>
-            </article>
+            </motion.article>
           )
         })}
       </div>
@@ -82,7 +96,7 @@ const Carousel = () => {
         className="rounded-full border-2 px-4 py-2 text-sm md:text-base lg:text-lg"
         onClick={showPreviousProject}
       >
-        ←
+        &larr;
       </button>
 
       <button
@@ -91,7 +105,7 @@ const Carousel = () => {
         className="rounded-full border-2 px-4 py-2 text-sm md:text-base lg:text-lg"
         onClick={showNextProject}
       >
-        →
+        &rarr;
       </button>
     </div>
 
