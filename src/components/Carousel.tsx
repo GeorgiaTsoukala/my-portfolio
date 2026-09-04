@@ -80,8 +80,23 @@ const Carousel = () => {
                 translateY: '-50%',
               }}
             >
-              <h2>{project.title}</h2>
-              <p>{project.description}</p>
+              <div>
+                <h2 className="text-2xl font-bold">
+                  {project.title}
+                </h2>
+
+                <p className="mt-6 text-base leading-relaxed">
+                  {project.description}
+                </p>
+
+                <div className="mt-5 flex flex-wrap gap-x-3 gap-y-2 text-left text-sm">
+                  {project.tags.map((tag) => (
+                    <span key={tag}>
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </motion.article>
           )
         })}
