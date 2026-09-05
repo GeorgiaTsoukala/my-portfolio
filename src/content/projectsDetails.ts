@@ -5,7 +5,7 @@ export type ProjectDetail = {
   description: string
   tags: string[]
   //technologies
-  //git repo?
+  githubUrl?: string
   //more details
   color: string
 }
@@ -23,6 +23,7 @@ export const projectsDetails: ProjectDetail[] = [
     title: 'Check It',
     description: 'A short placeholder description for the second project.',
     tags: ['mobile',],
+    githubUrl: 'https://github.com/GeorgiaTsoukala/CheckIt-MobileApp',
     color: '#ff3c87',
   },
   {
@@ -37,6 +38,7 @@ export const projectsDetails: ProjectDetail[] = [
     title: 'Fix It',
     description: 'A short placeholder description for the fourth project.',
     tags: ['mobile'],
+    githubUrl: 'https://github.com/GeorgiaTsoukala/FixIt-MobileApp',    
     color: '#ff815d',
   },
 ]

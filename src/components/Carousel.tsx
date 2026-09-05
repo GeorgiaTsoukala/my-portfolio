@@ -5,7 +5,7 @@ import { projectsDetails } from '../content/projectsDetails'
 // Layout values for the three visible carousel positions: left and right background cards, centered active card
 const cardLayouts = [
   {
-    x: '-55%',
+    x: '-50%',
     y: '0%',
     scale: 0.85,
     rotate: -6,
@@ -19,7 +19,7 @@ const cardLayouts = [
     zIndex: 10,
   },
   {
-    x: '55%',
+    x: '50%',
     y: '0%',
     scale: 0.85,
     rotate: 6,
@@ -141,6 +141,18 @@ const Carousel = () => {
                   <h2 className="text-2xl font-bold">
                     {project.title}
                   </h2>
+
+                  {project.githubUrl ? (
+                    <a 
+                      href={project.githubUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ cursor: 'pointer' }}
+                      className="cursor-pointer underline"
+                    >
+                      GitHub repo
+                    </a>
+                  ) : null}
 
                   <p className="mt-6 text-base leading-relaxed">
                     More project details will go here.
