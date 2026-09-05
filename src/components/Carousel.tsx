@@ -10,7 +10,6 @@ const cardLayouts = [
     scale: 0.85,
     rotate: -6,
     zIndex: 0,
-    backgroundColor: '#111111',
   },
   {
     x: '0%',
@@ -18,7 +17,6 @@ const cardLayouts = [
     scale: 1,
     rotate: 0,
     zIndex: 10,
-    backgroundColor: '#4F46E5',
   },
   {
     x: '55%',
@@ -26,7 +24,6 @@ const cardLayouts = [
     scale: 0.85,
     rotate: 6,
     zIndex: 0,
-    backgroundColor: '#111111',
   },
 ]
 
@@ -80,7 +77,8 @@ const Carousel = () => {
                 rotate: layout.rotate,
                 rotateY: isOpen ? 180 : 0, // make the card flip around the Y axis when it opens
                 zIndex: isOpen ? 50 : layout.zIndex, // if this card is open, bring it in front of everything
-                backgroundColor: layout.backgroundColor,
+                backgroundColor: project.color,
+                opacity: isCenterCard ? 1 : 0.6,
               }}
               // Keep centering separate from animated x so Framer Motion does not overwrite the -50% offset
               style={{
