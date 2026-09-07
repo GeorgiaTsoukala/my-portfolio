@@ -5,6 +5,7 @@ export type ProjectDetail = {
   description: string
   overview: string
   buildDetails: string
+  //how it works?
   testing: string
   tags: string[]
   //technologies-tools?
@@ -17,9 +18,9 @@ export const projectsDetails: ProjectDetail[] = [
     id: 'project-one',
     title: 'Ambulance Adventure',
     description: "A hospital visit can feel overwhelming when you're little. Ambulance Adventure is a wall-mounted board game that lets children explore what happens during a visit to Herlev Hospital's pediatric emergency department.",
-    overview: "",
-    buildDetails: "",
-    testing: "",
+    overview: "For my master's thesis, my thesis partner and I created Ambulance Adventure for children aged 4-7 at Herlev Hospital's pediatric emergency department. We set out to make the hospital journey feel more familiar through play.",
+    buildDetails: "Designed in Fusion 360 and built using laser cutting and 3D printing, with Arduino boards controlling the interactions. RFID readers detect when the toy-ambulance enters a room, activating buttons that let children hear about the items found there.",
+    testing: "On-site research, including interviews with emergency department staff at Herlev Hospital, helped identify children's needs and shape the game through several prototypes. The game's impact was evaluated through structured observations of how children interacted with it, alongside anxiety ratings and children's self-reports before and after playing.",
     tags: ['physical', 'design'],
     color: '#4f46e5',
   },
@@ -61,7 +62,6 @@ export const projectsDetails: ProjectDetail[] = [
 
 // Tools 
 // React Native · Firebase · Victory Native · Figma
-
 
 
 // Yellow Pages 
