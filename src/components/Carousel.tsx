@@ -130,44 +130,82 @@ const Carousel = () => {
               </div>   
 
               {/* Back face of the card */}  
-              <div
-                className="absolute inset-0 flex flex-col justify-between p-8"
-                style={{
-                  transform: 'rotateY(180deg)',
-                  backfaceVisibility: 'hidden',
-                }}
-              >
-                <div>
-                  <h2 className="text-2xl font-bold">
-                    {project.title}
-                  </h2>
+              {isOpen ? (
+                <>
+                  <div
+                    className="absolute inset-0 flex flex-col justify-between p-8"
+                    style={{
+                      transform: 'rotateY(180deg)',
+                      backfaceVisibility: 'hidden',
+                    }}
+                  >
+                    <div className="flex min-h-0 flex-1 flex-col">
+                      <h2 className="text-2xl font-bold">
+                        {project.title}
+                      </h2>
 
-                  {project.githubUrl ? (
-                    <a 
-                      href={project.githubUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{ cursor: 'pointer' }}
-                      className="cursor-pointer underline"
-                    >
-                      GitHub repo
-                    </a>
-                  ) : null}
+                      <div className="project-scroll mt-5 min-h-0 flex-1 overflow-y-auto pr-2">
+                        <section>
+                          <p className="text-sm leading-relaxed">
+                            {project.overview}
+                          </p>
+                        </section>
 
-                  <p className="mt-6 text-base leading-relaxed">
-                    More project details will go here.
-                  </p>
-                </div>
+                        <div className="mt-5 flex h-32 items-center justify-center border-2 border-white/70">
+                          <span className="text-sm text-white/70">
+                            Project photos
+                          </span>
+                        </div>
 
-                <button
-                  type="button"
-                  style={{ cursor: 'pointer' }}
-                  className="self-end rounded-full border-2 border-white px-4 py-2 text-sm"
-                  onClick={() => setOpenProjectId(null)}
-                >
-                  Flip Back
-                </button>
-              </div>
+                        <section className="mt-5">
+                          <h3 className="text-xs uppercase tracking-wide text-white/70">
+                            Behind the scenes
+                          </h3>
+
+                          <p className="mt-2 text-sm leading-relaxed">
+                            {project.buildDetails}
+                          </p>
+                        </section>
+
+                        <section className="mt-5">
+                          <h3 className="text-xs uppercase tracking-wide text-white/70">
+                            Testing
+                          </h3>
+
+                          <p className="mt-2 text-sm leading-relaxed">
+                            {project.testing}
+                          </p>
+                        </section>
+                      </div>
+                    </div>
+
+                    <div className="mt-6 flex items-center justify-between gap-6">
+                      <div>
+                        {project.githubUrl ? (
+                          <a
+                            href={project.githubUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            style={{ cursor: 'pointer' }}
+                            className="cursor-pointer text-sm underline"
+                          >
+                            GitHub repo
+                          </a>
+                        ) : null}
+                      </div>
+
+                      <button
+                        type="button"
+                        style={{ cursor: 'pointer' }}
+                        className="rounded-full border-2 border-white px-4 py-2 text-sm"
+                        onClick={() => setOpenProjectId(null)}
+                      >
+                        Flip Back
+                      </button>
+                    </div>
+                  </div>
+                </>
+              ) : null}
             </motion.article>
           )
         })}
