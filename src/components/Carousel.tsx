@@ -49,11 +49,30 @@ const Carousel = () => {
     })
   }
 
-  return (
-  <div className="flex h-full w-full flex-col pb-6 md:pb-10">
+  const handleCardClick = (index: number) => {
+    if (openProjectId !== null) {
+      return
+    }
 
-    {/* Top part of the screen for the carousel cards*/}
-    <div className="flex h-[90%] items-center justify-center">
+    if (index === 0) {
+      showPreviousProject()
+    }
+
+    if (index === 2) {
+      showNextProject()
+    }
+  }
+
+  return (
+  <div 
+    className="flex h-full w-full flex-col"
+      onClick={() => {
+        if (openProjectId !== null) {
+          setOpenProjectId(null)
+        }
+      }}
+  >
+    <div className="flex h-full items-center justify-center">
       <div className="relative h-full w-full max-w-5xl">
         {orderedProjects.slice(0, 3).map((project, index) => {
           const layout = cardLayouts[index]
@@ -63,7 +82,19 @@ const Carousel = () => {
           return (
             <motion.article
               key={project.id}
-              className="absolute left-1/2 top-1/2 h-150 w-180 border-2 border-white text-white"
+              onClick={(event) => {
+                if (isOpen) {
+                  event.stopPropagation()
+                }
+
+                handleCardClick(index)
+              }}
+              whileHover={
+                !isCenterCard && openProjectId === null
+                  ? { opacity: 0.8 }
+                  : undefined
+              }
+              className="absolute left-1/2 top-1/2 h-155 w-180 border-2 border-white text-white"
               // Framer Motion animates the carousel movement
               transition={{
                 type: 'spring',
@@ -72,7 +103,7 @@ const Carousel = () => {
               }}
               animate={{
                 x: layout.x,
-                y: isOpen ? '7.5vh' : layout.y,
+                y: layout.y,
                 scale: isOpen ? 1.15 : layout.scale, // if this card is open, make it bigger
                 rotate: layout.rotate,
                 rotateY: isOpen ? 180 : 0, // make the card flip around the Y axis when it opens
@@ -82,6 +113,7 @@ const Carousel = () => {
               }}
               // Keep centering separate from animated x so Framer Motion does not overwrite the -50% offset
               style={{
+                cursor: !isCenterCard && openProjectId === null ? 'pointer' : 'default', 
                 translateX: '-50%',
                 translateY: '-50%',
                 transformStyle: 'preserve-3d', // keep the front and back faces in 3D space
@@ -122,7 +154,10 @@ const Carousel = () => {
                     style={{ cursor: 'pointer' }}
                     disabled={!isCenterCard}
                     className="shrink-0 rounded-full border-2 border-white px-4 py-2 text-sm disabled:pointer-events-none disabled:opacity-0"
-                    onClick={() => setOpenProjectId(project.id)}
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      setOpenProjectId(project.id)
+                    }}
                   >
                     Flip me
                   </button>
@@ -186,6 +221,7 @@ const Carousel = () => {
                             href={project.githubUrl}
                             target="_blank"
                             rel="noreferrer"
+                            onClick={(event) => event.stopPropagation()}
                             style={{ cursor: 'pointer' }}
                             className="cursor-pointer text-sm underline"
                           >
@@ -198,7 +234,10 @@ const Carousel = () => {
                         type="button"
                         style={{ cursor: 'pointer' }}
                         className="rounded-full border-2 border-white px-4 py-2 text-sm"
-                        onClick={() => setOpenProjectId(null)}
+                        onClick={(event) => {
+                          event.stopPropagation()
+                          setOpenProjectId(null)
+                        }}
                       >
                         Flip Back
                       </button>
@@ -210,31 +249,7 @@ const Carousel = () => {
           )
         })}
       </div>
-    </div>
-
-    {/* Bottom part of the screen for the carousel controls area*/}
-    <div className="flex h-[10%] items-end justify-center gap-8 pb-3">
-      <button
-        type="button"
-        disabled={openProjectId !== null}
-        style={{ cursor: 'pointer' }}
-        className="rounded-full border-2 px-4 py-2 text-sm disabled:pointer-events-none disabled:opacity-30 md:text-base lg:text-lg"
-        onClick={showPreviousProject}
-      >
-        &larr;
-      </button>
-
-      <button
-        type="button"
-        disabled={openProjectId !== null}
-        style={{ cursor: 'pointer' }}
-        className="rounded-full border-2 px-4 py-2 text-sm disabled:pointer-events-none disabled:opacity-30 md:text-base lg:text-lg"
-        onClick={showNextProject}
-      >
-        &rarr;
-      </button>
-    </div>
-
+    </div>   
   </div>
 )
 }
