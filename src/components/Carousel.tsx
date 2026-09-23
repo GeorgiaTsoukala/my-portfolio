@@ -129,10 +129,12 @@ const Carousel = () => {
                     {project.title}
                   </h2>
 
-                  <div className="mt-6 flex h-48 items-center justify-center border-2 border-white/70">
-                    <span className="text-sm text-white/70">
-                      Project image
-                    </span>
+                  <div className="mt-6 flex h-80 items-center justify-center">
+                    <img
+                      src={project.frontImage}
+                      alt={project.frontImageAlt}
+                      className="max-h-full max-w-full h-auto w-auto object-contain"
+                    />
                   </div>
 
                   <p className="mt-6 text-base leading-relaxed">
@@ -186,11 +188,20 @@ const Carousel = () => {
                           </p>
                         </section>
 
-                        <div className="mt-5 flex h-32 items-center justify-center border-2 border-white/70">
-                          <span className="text-sm text-white/70">
-                            Project photos
-                          </span>
-                        </div>
+                        {project.backImages && project.backImages.length > 0 ? (
+                          <div className="project-scroll mt-5 flex overflow-x-auto pb-3">
+                            <div className="flex gap-3">
+                              {project.backImages.map((image) => (
+                                <img
+                                  key={image.src}
+                                  src={image.src}
+                                  alt={image.alt}
+                                  className="max-h-60 max-w-none shrink-0 object-contain"
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        ) : null}
 
                         <section className="mt-5">
                           <h3 className="text-xs uppercase tracking-wide text-white/70">
