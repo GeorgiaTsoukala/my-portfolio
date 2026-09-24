@@ -30,3 +30,98 @@ body,
 .project-scroll::-webkit-scrollbar-thumb:hover {
   background: white;
 }
+
+@layer components {
+  .blob-button {
+    position: relative;
+    isolation: isolate;
+    border: 2px solid white;
+    border-radius: 9999px;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+    transition: color 0.5s;
+  }
+
+  .blob-button__label {
+    position: relative;
+    z-index: 1;
+  }
+
+  .blob-button__inner {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  .blob-button__blobs {
+    position: relative;
+    display: block;
+    height: 100%;
+  }
+
+  .blob-button__blob {
+    position: absolute;
+    top: 0;
+    width: 25%;
+    height: 100%;
+    border-radius: 50%;
+    background: white;
+    transform: translate3d(0, 150%, 0) scale(1.4);
+    transition: transform 0.45s;
+  }
+
+  .blob-button__blob:nth-child(1) {
+    left: 0%;
+    transition-delay: 0s;
+  }
+
+  .blob-button__blob:nth-child(2) {
+    left: 30%;
+    transition-delay: 0.08s;
+  }
+
+  .blob-button__blob:nth-child(3) {
+    left: 60%;
+    transition-delay: 0.16s;
+  }
+
+  .blob-button__blob:nth-child(4) {
+    left: 90%;
+    transition-delay: 0.24s;
+  }
+
+  .blob-button:is(:hover, :focus-visible):not(:disabled) {
+    color: black;
+  }
+
+  .blob-button:is(:hover, :focus-visible):not(:disabled)
+    .blob-button__blob {
+    transform: translateZ(0) scale(1.4);
+  }
+
+  .blob-button:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 4px;
+  }
+
+  .blob-button:disabled {
+    cursor: default;
+  }
+
+  .blob-button__filter {
+    position: absolute;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .blob-button,
+    .blob-button__blob {
+      transition: none;
+    }
+  }
+}

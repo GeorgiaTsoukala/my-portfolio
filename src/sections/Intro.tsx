@@ -25,9 +25,6 @@ const Intro = () => {
         {/* Intro text on top half of the screen */}
         <div className="flex h-1/2 items-center justify-center">
           <div className="max-w-6xl text-center">
-            {/* <h1 className="text-2xl font-bold md:text-3xl lg:text-4xl">
-              Hi, I’m Georgia!
-            </h1> */}
             <h1 className="text-2xl font-bold md:text-3xl lg:text-4xl">
               Hi, I’m{' '}
               <span className="inline-block whitespace-nowrap">

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Bodies, Engine, Runner, World, type Body } from 'matter-js'
 import type { IntroSkillItem } from '../content/introSkills'
+import BlobButton from './BlobButton'
 
 type PhysicsSkillBoxProps = {
   title: string
@@ -243,16 +244,16 @@ const PhysicsSkillBox = ({ title, skills }: PhysicsSkillBoxProps) => {
         </div>
       ))}
       
-      {/* Button that spawns the physics pills for this category */}
-      <button
+      {/* Button that spawns the physics pills for this category */}      
+      <BlobButton
         ref={buttonRef}
         type="button"
         style={{ cursor: 'pointer' }}
-        className="absolute bottom-3 left-1/2 z-10 whitespace-nowrap -translate-x-1/2 rounded-full border-2 px-4 py-2 text-sm md:text-base lg:text-lg"
+        className="absolute bottom-3 left-1/2 z-10 whitespace-nowrap -translate-x-1/2 px-4 py-2 text-sm md:text-base lg:text-lg"
         onClick={handleDropSkills}
       >
         {title}
-      </button>
+      </BlobButton>
     </div>
   )
 }

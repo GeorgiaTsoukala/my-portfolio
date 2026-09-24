@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { projectsDetails } from '../content/projectsDetails'
+import BlobButton from './BlobButton'
 
 // Layout values for the three visible carousel positions: left and right background cards, centered active card
 const cardLayouts = [
@@ -150,19 +151,19 @@ const Carousel = () => {
                       </span>
                     ))}
                   </div>
-
-                  <button
+                  
+                  <BlobButton
                     type="button"
                     style={{ cursor: 'pointer' }}
                     disabled={!isCenterCard}
-                    className="shrink-0 rounded-full border-2 border-white px-4 py-2 text-sm disabled:pointer-events-none disabled:opacity-0"
+                    className="shrink-0 px-4 py-2 text-sm disabled:pointer-events-none disabled:opacity-0"
                     onClick={(event) => {
                       event.stopPropagation()
                       setOpenProjectId(project.id)
                     }}
                   >
                     Flip me
-                  </button>
+                  </BlobButton>
                 </div>   
               </div>   
 
@@ -240,18 +241,18 @@ const Carousel = () => {
                           </a>
                         ) : null}
                       </div>
-
-                      <button
+                      
+                      <BlobButton
                         type="button"
                         style={{ cursor: 'pointer' }}
-                        className="rounded-full border-2 border-white px-4 py-2 text-sm"
+                        className="px-4 py-2 text-sm"
                         onClick={(event) => {
                           event.stopPropagation()
                           setOpenProjectId(null)
                         }}
                       >
                         Flip Back
-                      </button>
+                      </BlobButton>
                     </div>
                   </div>
                 </>
