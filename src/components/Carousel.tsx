@@ -66,13 +66,27 @@ const Carousel = () => {
 
   return (
   <div 
-    className="flex h-full w-full flex-col"
+    className="relative flex h-full w-full flex-col"
       onClick={() => {
         if (openProjectId !== null) {
           setOpenProjectId(null)
         }
       }}
   >
+    <motion.div
+      initial={false}
+      animate={{
+        opacity: openProjectId !== null ? 1 : 0,
+      }}
+      transition={{
+        duration: 0.2,
+      }}
+      className="absolute inset-0 z-40 bg-black/20 backdrop-blur-[3px]"
+      style={{
+        pointerEvents: openProjectId !== null ? 'auto' : 'none',
+      }}
+    />
+    
     <div className="flex h-full items-center justify-center">
       <div className="relative h-full w-full max-w-5xl">
         {orderedProjects.slice(0, 3).map((project, index) => {
