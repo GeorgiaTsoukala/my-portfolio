@@ -1,7 +1,19 @@
 import { introSkills } from '../content/introSkills'
+import { motion, useReducedMotion } from 'framer-motion'
 import PhysicsSkillBox from '../components/PhysicsSkillBox'
 
 const Intro = () => {
+  const reduceMotion = useReducedMotion()
+
+  const colors = [
+    '#f43f5e', // pink-red
+    '#fb923c', // orange
+    '#facc15', // yellow
+    '#4ade80', // green
+    '#22d3ee', // cyan
+    '#818cf8', // indigo
+    '#e879f9', // purple-pink
+  ]
 
   return (
     <section
@@ -13,8 +25,37 @@ const Intro = () => {
         {/* Intro text on top half of the screen */}
         <div className="flex h-1/2 items-center justify-center">
           <div className="max-w-6xl text-center">
-            <h1 className="text-2xl font-bold md:text-3xl lg:text-4xl">
+            {/* <h1 className="text-2xl font-bold md:text-3xl lg:text-4xl">
               Hi, I’m Georgia!
+            </h1> */}
+            <h1 className="text-2xl font-bold md:text-3xl lg:text-4xl">
+              Hi, I’m{' '}
+              <span className="inline-block whitespace-nowrap">
+                <span className="sr-only">Georgia</span>
+                <span aria-hidden="true">
+                  {'Georgia'.split('').map((letter, index) => (
+                    <motion.span
+                      key={index}
+                      animate={{ y: reduceMotion ? 0 : [0, -12, 0] }}
+                      transition={{
+                        duration: 1,
+                        repeat: reduceMotion ? 0 : Infinity,
+                        repeatDelay: 0.3,
+                        delay: index * 0.15,
+                        ease: 'easeInOut',
+                      }}
+                      style={{
+                        color: colors[index],
+                        textShadow: `0 4px 12px ${colors[index]}55`,
+                        display: 'inline-block',
+                      }}
+                    >
+                      {letter}
+                    </motion.span>
+                  ))}
+                </span>
+              </span>
+              !
             </h1>
 
             <p className="mt-5 text-base leading-relaxed md:text-lg lg:text-2xl">
