@@ -31,6 +31,10 @@ const cardLayouts = [
 const Carousel = () => {
   const [orderedProjects, setOrderedProjects] = useState(projectsDetails)
   const [openProjectId, setOpenProjectId] = useState<string | null>(null)
+  const [selectedImage, setSelectedImage] = useState<{
+    src: string
+    alt: string
+  } | null>(null)
 
   const showPreviousProject = () => {
     setOrderedProjects((currentProjects) => {

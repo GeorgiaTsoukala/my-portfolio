@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { aboutStickers } from '../content/aboutStickers'
+import AutoSizedBubble from '../components/AutoSizedBubble'
 import bubblePop from '../assets/bubble-pop.mp3'
 
 const About = () => {
@@ -49,6 +50,9 @@ const About = () => {
 
             {/* Show info bubble of the pressed sticker */}
             {openStickerId === sticker.id && (
+              <AutoSizedBubble sticker={sticker} />
+            )}
+            {/* {openStickerId === sticker.id && (
               <div
                 className={`absolute left-1/2 z-30 w-[min(20rem,calc(100vw-3rem))] -translate-x-1/2 text-center ${
                   sticker.bubbleSide === 'top'
@@ -81,7 +85,7 @@ const About = () => {
                   />
                 </div>
               </div>
-            )}
+            )} */}
           </div>
         ))}
 
