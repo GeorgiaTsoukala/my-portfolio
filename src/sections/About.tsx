@@ -19,10 +19,10 @@ const About = () => {
   return (
     <section
       id="about"
-      className="h-screen snap-start p-6 md:p-10"
+      className="flex h-screen snap-start flex-col p-6 md:p-10"
     >
       <div 
-        className="relative h-full w-full"
+        className="relative min-h-0 w-full flex-1"
         onClick={() => setOpenStickerId(null)} // Preventing sticker/bubble clicks from triggering the close handler
       >
 
@@ -96,6 +96,10 @@ const About = () => {
         </div>
 
       </div>
+      <footer className="flex shrink-0 items-center justify-between gap-2 text-[clamp(6px,1.5vw,14px)] leading-relaxed text-white/60">
+        <p className="whitespace-nowrap">© 2026 Georgia Tsoukala. All rights reserved.</p>
+        <p className="whitespace-nowrap text-right">Designed and developed by ME :)</p>
+      </footer>
     </section>
   )
 }

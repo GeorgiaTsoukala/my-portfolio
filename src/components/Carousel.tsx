@@ -109,7 +109,7 @@ const Carousel = () => {
                   ? { opacity: 0.8 }
                   : undefined
               }
-              className="absolute left-1/2 top-1/2 h-155 w-180 border-2 border-white text-white"
+              className="absolute left-1/2 top-1/2 h-155 w-180 rounded-lg border-2 border-white text-white"
               // Framer Motion animates the carousel movement
               transition={{
                 type: 'spring',

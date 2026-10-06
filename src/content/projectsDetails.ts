@@ -67,20 +67,20 @@ export const projectsDetails: ProjectDetail[] = [
       },
       {
         src: checkitImage5,
-        alt: 'Yellow Pages reflections screen visualizations1',
+        alt: 'Check It reflections screen visualizations1',
       },
       {
         src: checkitImage6,
-        alt: 'Yellow Pages reflections screen visualizations2',
+        alt: 'Check It reflections screen visualizations2',
       },
       {
         src: checkitImage7,
-        alt: 'Yellow Pages reflections screen visualizations3',
+        alt: 'Check It reflections screen visualizations3',
       },
     ],
     buildDetails: "Built with React Native, with Firebase handling accounts and data storage. Interactive charts made with Victory Native let users explore patterns in their mood and daily achievements.",
     testing: "Throughout development, user testing helped shape the app. Think-aloud sessions explored how people understood the interface and concept, while Wizard of Oz experiments tested the impact of push notifications across different user groups.",
-    tags: ['mobile',],
+    tags: ['mobile'],
     githubUrl: 'https://github.com/GeorgiaTsoukala/CheckIt-MobileApp',
     color: '#ff3c87',
   },
@@ -111,7 +111,7 @@ export const projectsDetails: ProjectDetail[] = [
     ],
     buildDetails: "Designed in Fusion 360 and built using laser cutting and 3D printing, with Arduino boards controlling the interactions. RFID readers detect when the toy-ambulance enters a room, activating buttons that let children hear about the items found there.",
     testing: "On-site research, including interviews with emergency department staff at Herlev Hospital, helped identify children's needs and shape the game through several prototypes. The game's impact was evaluated through structured observations of how children interacted with it, alongside anxiety ratings and children's self-reports before and after playing.",
-    tags: ['physical', 'design'],
+    tags: ['physical'],
     color: '#4f46e5',
   },  
   {
