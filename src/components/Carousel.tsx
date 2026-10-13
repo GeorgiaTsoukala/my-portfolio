@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { projectsDetails } from '../content/projectsDetails'
 import BlobButton from './BlobButton'
@@ -38,6 +38,7 @@ const Carousel = () => {
     }[]
     currentIndex: number
   } | null>(null)
+  const backImagesScrollRef = useRef<HTMLDivElement>(null)
 
   // Handle keyboard controls only while the lightbox is open
   useEffect(() => {
@@ -96,6 +97,20 @@ const Carousel = () => {
       window.removeEventListener('keydown', handleKeyDown)
     }
   }, [selectedImage])
+
+  // Smoothly move the back-image row left or right by most of its visible width
+  const scrollBackImages = (direction: -1 | 1) => {
+    const imageRow = backImagesScrollRef.current
+
+    if (imageRow === null) {
+      return
+    }
+
+    imageRow.scrollBy({
+      left: direction * imageRow.clientWidth * 0.8,
+      behavior: 'smooth',
+    })
+  }
 
   const showPreviousImage = () => {
     setSelectedImage((currentSelection) => {
@@ -254,33 +269,35 @@ const Carousel = () => {
                     {project.title}
                   </h2>
 
-                  <button
-                    type="button"
-                    aria-label={`Enlarge ${project.title} image`}
-                    tabIndex={isCenterCard ? 0 : -1}
-                    className="mt-6 flex h-80 w-full items-center justify-center"
-                    style={{
-                      cursor: isCenterCard ? 'pointer' : 'inherit',
-                    }}
-                    onClick={(event) => {
-                      if (!isCenterCard || !project.frontImage) {
-                        return
-                      }
+                  <div className="mt-6 flex h-80 w-full items-center justify-center">
+                    <button
+                      type="button"
+                      aria-label={`Enlarge ${project.title} image`}
+                      tabIndex={isCenterCard ? 0 : -1}
+                      className="inline-flex h-fit w-fit max-h-full max-w-full items-center justify-center"
+                      style={{
+                        cursor: isCenterCard ? 'pointer' : 'inherit',
+                      }}
+                      onClick={(event) => {
+                        if (!isCenterCard || !project.frontImage) {
+                          return
+                        }
 
-                      event.stopPropagation()
+                        event.stopPropagation()
 
-                      setSelectedImage({
-                        images: projectImages,
-                        currentIndex: 0,
-                      })
-                    }}
-                  >
-                    <img
-                      src={project.frontImage}
-                      alt={project.frontImageAlt}
-                      className="h-auto max-h-full w-auto max-w-full object-contain"
-                    />
-                  </button>
+                        setSelectedImage({
+                          images: projectImages,
+                          currentIndex: 0,
+                        })
+                      }}
+                    >
+                      <img
+                        src={project.frontImage}
+                        alt={project.frontImageAlt}
+                        className="block h-auto max-h-80 w-auto max-w-full object-contain"
+                      />
+                    </button>
+                  </div>
 
                   <p className="mt-6 text-base leading-relaxed">
                     {project.description}
@@ -334,34 +351,68 @@ const Carousel = () => {
                         </section>
 
                         {project.backImages && project.backImages.length > 0 ? (
-                          <div className="project-scroll mt-5 flex overflow-x-auto pb-3">
-                            <div className="flex gap-3">
-                              {project.backImages.map((image, imageIndex) => (
-                                <button
-                                  key={image.src}
-                                  type="button"
-                                  aria-label={`Enlarge ${image.alt}`}
-                                  className="shrink-0"
-                                  style={{ cursor: 'pointer' }}
-                                  onClick={(event) => {
-                                    event.stopPropagation()
-                                    // Back images start at index 1 when the front image occupies index 0
-                                    setSelectedImage({ 
-                                      images: projectImages,
-                                      currentIndex: project.frontImage
-                                        ? imageIndex + 1
-                                        : imageIndex,
-                                    })
-                                  }}
-                                >
-                                  <img
-                                    src={image.src}
-                                    alt={image.alt}
-                                    className="block max-h-60 w-auto max-w-none object-contain"
-                                  />
-                                </button>
-                              ))}
+                          <div className="relative mx-5 mt-5">
+                            {project.backImages.length > 1 ? (
+                              <button
+                                type="button"
+                                aria-label="Scroll project images left"
+                                className="absolute left-0 top-1/2 z-10 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-black/35 text-2xl text-white transition-colors hover:bg-black/50"
+                                onClick={(event) => {
+                                  event.stopPropagation()
+                                  scrollBackImages(-1)
+                                }}
+                              >
+                                &lt;
+                              </button>
+                            ) : null}
+
+                            <div
+                              ref={backImagesScrollRef}
+                              className="project-image-scroll flex overflow-x-auto"
+                            >
+                              <div className="flex gap-3">
+                                {project.backImages.map((image, imageIndex) => (
+                                  <button
+                                    key={image.src}
+                                    type="button"
+                                    aria-label={`Enlarge ${image.alt}`}
+                                    className="shrink-0"
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={(event) => {
+                                      event.stopPropagation()
+
+                                      // Back images start at index 1 when the front image occupies index 0
+                                      setSelectedImage({
+                                        images: projectImages,
+                                        currentIndex: project.frontImage
+                                          ? imageIndex + 1
+                                          : imageIndex,
+                                      })
+                                    }}
+                                  >
+                                    <img
+                                      src={image.src}
+                                      alt={image.alt}
+                                      className="block max-h-60 w-auto max-w-none object-contain"
+                                    />
+                                  </button>
+                                ))}
+                              </div>
                             </div>
+
+                            {project.backImages.length > 1 ? (
+                              <button
+                                type="button"
+                                aria-label="Scroll project images right"
+                                className="absolute right-0 top-1/2 z-10 flex h-10 w-10 translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-black/35 text-2xl text-white transition-colors hover:bg-black/50"
+                                onClick={(event) => {
+                                  event.stopPropagation()
+                                  scrollBackImages(1)
+                                }}
+                              >
+                                &gt;
+                              </button>
+                            ) : null}
                           </div>
                         ) : null}
 

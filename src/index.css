@@ -31,6 +31,15 @@ body,
   background: white;
 }
 
+.project-image-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.project-image-scroll::-webkit-scrollbar {
+  display: none;
+}
+
 @layer components {
   .blob-button {
     position: relative;
