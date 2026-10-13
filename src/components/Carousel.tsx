@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { projectsDetails } from '../content/projectsDetails'
 import BlobButton from './BlobButton'
 
@@ -31,10 +31,105 @@ const cardLayouts = [
 const Carousel = () => {
   const [orderedProjects, setOrderedProjects] = useState(projectsDetails)
   const [openProjectId, setOpenProjectId] = useState<string | null>(null)
-  // const [selectedImage, setSelectedImage] = useState<{
-  //   src: string
-  //   alt: string
-  // } | null>(null)
+  const [selectedImage, setSelectedImage] = useState<{
+    images: {
+      src: string
+      alt: string
+    }[]
+    currentIndex: number
+  } | null>(null)
+
+  // Handle keyboard controls only while the lightbox is open
+  useEffect(() => {
+    if (selectedImage === null) {
+      return
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setSelectedImage(null)
+        return
+      }
+
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault()
+
+        setSelectedImage((currentSelection) => {
+          if (currentSelection === null) {
+            return null
+          }
+
+          const previousIndex =
+            (currentSelection.currentIndex - 1 + currentSelection.images.length)
+            % currentSelection.images.length
+
+          return {
+            ...currentSelection,
+            currentIndex: previousIndex,
+          }
+        })
+      }
+
+      if (event.key === 'ArrowRight') {
+        event.preventDefault()
+
+        setSelectedImage((currentSelection) => {
+          if (currentSelection === null) {
+            return null
+          }
+
+          const nextIndex =
+            (currentSelection.currentIndex + 1)
+            % currentSelection.images.length
+
+          return {
+            ...currentSelection,
+            currentIndex: nextIndex,
+          }
+        })
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [selectedImage])
+
+  const showPreviousImage = () => {
+    setSelectedImage((currentSelection) => {
+      if (currentSelection === null) {
+        return null
+      }
+
+      const previousIndex =
+        (currentSelection.currentIndex - 1 + currentSelection.images.length)
+        % currentSelection.images.length
+
+      return {
+        ...currentSelection,
+        currentIndex: previousIndex,
+      }
+    })
+  }
+
+  const showNextImage = () => {
+    setSelectedImage((currentSelection) => {
+      if (currentSelection === null) {
+        return null
+      }
+
+      const nextIndex =
+        (currentSelection.currentIndex + 1)
+        % currentSelection.images.length
+
+      return {
+        ...currentSelection,
+        currentIndex: nextIndex,
+      }
+    })
+  }
 
   const showPreviousProject = () => {
     setOrderedProjects((currentProjects) => {
@@ -77,6 +172,8 @@ const Carousel = () => {
         }
       }}
   >
+
+    {/* Blur the carousel behind an open card while keeping the card above the overlay */}
     <motion.div
       initial={false}
       animate={{
@@ -97,6 +194,16 @@ const Carousel = () => {
           const layout = cardLayouts[index]
           const isCenterCard = index === 1
           const isOpen = openProjectId === project.id
+          // Combine the front and back images into one ordered lightbox gallery
+          const projectImages = [ 
+            ...(project.frontImage
+              ? [{
+                  src: project.frontImage,
+                  alt: project.frontImageAlt ?? `${project.title} project image`,
+                }]
+              : []),
+            ...(project.backImages ?? []),
+          ]
 
           return (
             <motion.article
@@ -113,8 +220,7 @@ const Carousel = () => {
                   ? { opacity: 0.8 }
                   : undefined
               }
-              className="absolute left-1/2 top-1/2 h-155 w-180 rounded-lg border-2 border-white text-white"
-              // Framer Motion animates the carousel movement
+              className="absolute left-1/2 top-1/2 h-155 w-180 rounded-[1rem] border-2 border-white text-white"
               transition={{
                 type: 'spring',
                 stiffness: 250, // Controls how strongly the animation is pulled toward its target, more stiff = faster/snappier
@@ -148,13 +254,33 @@ const Carousel = () => {
                     {project.title}
                   </h2>
 
-                  <div className="mt-6 flex h-80 items-center justify-center">
+                  <button
+                    type="button"
+                    aria-label={`Enlarge ${project.title} image`}
+                    tabIndex={isCenterCard ? 0 : -1}
+                    className="mt-6 flex h-80 w-full items-center justify-center"
+                    style={{
+                      cursor: isCenterCard ? 'pointer' : 'inherit',
+                    }}
+                    onClick={(event) => {
+                      if (!isCenterCard || !project.frontImage) {
+                        return
+                      }
+
+                      event.stopPropagation()
+
+                      setSelectedImage({
+                        images: projectImages,
+                        currentIndex: 0,
+                      })
+                    }}
+                  >
                     <img
                       src={project.frontImage}
                       alt={project.frontImageAlt}
-                      className="max-h-full max-w-full h-auto w-auto object-contain"
+                      className="h-auto max-h-full w-auto max-w-full object-contain"
                     />
-                  </div>
+                  </button>
 
                   <p className="mt-6 text-base leading-relaxed">
                     {project.description}
@@ -210,13 +336,30 @@ const Carousel = () => {
                         {project.backImages && project.backImages.length > 0 ? (
                           <div className="project-scroll mt-5 flex overflow-x-auto pb-3">
                             <div className="flex gap-3">
-                              {project.backImages.map((image) => (
-                                <img
+                              {project.backImages.map((image, imageIndex) => (
+                                <button
                                   key={image.src}
-                                  src={image.src}
-                                  alt={image.alt}
-                                  className="max-h-60 max-w-none shrink-0 object-contain"
-                                />
+                                  type="button"
+                                  aria-label={`Enlarge ${image.alt}`}
+                                  className="shrink-0"
+                                  style={{ cursor: 'pointer' }}
+                                  onClick={(event) => {
+                                    event.stopPropagation()
+                                    // Back images start at index 1 when the front image occupies index 0
+                                    setSelectedImage({ 
+                                      images: projectImages,
+                                      currentIndex: project.frontImage
+                                        ? imageIndex + 1
+                                        : imageIndex,
+                                    })
+                                  }}
+                                >
+                                  <img
+                                    src={image.src}
+                                    alt={image.alt}
+                                    className="block max-h-60 w-auto max-w-none object-contain"
+                                  />
+                                </button>
                               ))}
                             </div>
                           </div>
@@ -280,6 +423,104 @@ const Carousel = () => {
         })}
       </div>
     </div>   
+
+    {/* Lightbox for the projects' images */}
+    <AnimatePresence> {/* Keep the lightbox mounted long enough to play its opening and closing animations */}
+      {selectedImage ? (
+        <motion.div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Enlarged project image"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-8 backdrop-blur-sm"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{
+            opacity: 0,
+            transition: {
+              duration: 0.2,
+              delay: 0.15,
+            },
+          }}
+          transition={{ duration: 0.2 }}
+          onClick={(event) => {
+            event.stopPropagation()
+            setSelectedImage(null)
+          }}
+        >
+          <div className="absolute left-8 right-8 top-8 z-10 flex items-center justify-between">
+            <p
+              aria-live="polite"
+              className="pointer-events-none text-sm tabular-nums text-white/80"
+            >
+              {selectedImage.currentIndex + 1} / {selectedImage.images.length}
+            </p>
+
+            <button
+              type="button"
+              aria-label="Close enlarged image"
+              className="text-3xl leading-none text-white"
+              style={{ cursor: 'pointer' }}
+              onClick={(event) => {
+                event.stopPropagation()
+                setSelectedImage(null)
+              }}
+            >
+              x
+            </button>
+          </div>
+
+          {selectedImage.images.length > 1 ? (
+            <>
+              <button
+                type="button"
+                aria-label="Show previous image"
+                className="absolute left-6 top-1/2 -translate-y-1/2 text-6xl leading-none text-white"
+                style={{ cursor: 'pointer' }}
+                onClick={(event) => {
+                  event.stopPropagation()
+                  showPreviousImage()
+                }}
+              >
+                &lt;
+              </button>
+
+              <button
+                type="button"
+                aria-label="Show next image"
+                className="absolute right-6 top-1/2 -translate-y-1/2 text-6xl leading-none text-white"
+                style={{ cursor: 'pointer' }}
+                onClick={(event) => {
+                  event.stopPropagation()
+                  showNextImage()
+                }}
+              >
+                &gt;
+              </button>
+            </>
+          ) : null}
+          
+          <motion.img
+            src={selectedImage.images[selectedImage.currentIndex].src}
+            alt={selectedImage.images[selectedImage.currentIndex].alt}
+            className="max-h-[90vh] max-w-[90vw] object-contain"
+            initial={{ opacity: 0, scale: 0.92 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.92 }}
+            transition={{
+              scale: {
+                type: 'spring',
+                stiffness: 220,
+                damping: 22,
+              },
+              opacity: {
+                duration: 0.15,
+              },
+            }}
+            onClick={(event) => event.stopPropagation()}
+          />
+        </motion.div>
+      ) : null}
+    </AnimatePresence>
   </div>
 )
 }
